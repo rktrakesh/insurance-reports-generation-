@@ -1,5 +1,7 @@
 package com.irg.project.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -16,7 +18,7 @@ import com.irg.project.entity.CitizenPlan;
 @Component
 public class ExcelGenerator{
 	
-	public void generator(HttpServletResponse response, List<CitizenPlan> plans) throws Exception{
+	public void generator(HttpServletResponse response, List<CitizenPlan> plans, File f) throws Exception{
 		Workbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet("plans-data");
 		Row headerRow = sheet.createRow(0);
@@ -57,6 +59,10 @@ public class ExcelGenerator{
 			
 			dataRowIndex ++;
 		}
+		
+		FileOutputStream fos = new FileOutputStream(f);
+		workbook.write(fos);
+		workbook.close();
 		
 		ServletOutputStream servletOutputStream = response.getOutputStream();
 		workbook.write(servletOutputStream);

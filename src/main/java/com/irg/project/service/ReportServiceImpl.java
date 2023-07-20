@@ -1,5 +1,6 @@
 package com.irg.project.service;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.irg.project.dto.SearchRequest;
 import com.irg.project.entity.CitizenPlan;
 import com.irg.project.repository.CitizenRepository;
+import com.irg.project.util.EmailUtils;
 import com.irg.project.util.ExcelGenerator;
 import com.irg.project.util.PdfGenerator;
 
@@ -27,6 +29,9 @@ public class ReportServiceImpl implements ReportService {
 	
 	@Autowired
 	private PdfGenerator pdfGenerator;
+	
+	@Autowired
+	private EmailUtils emailUtils;
 
 	@Override
 	public List<String> getPlanName() {
@@ -76,17 +81,35 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public boolean exportExcel(HttpServletResponse response) throws Exception{
 		
+		File f = new File("Plans.xls");
+		
 		List<CitizenPlan> records = repository.findAll();
-		excelGenerator.generator(response, records);
+		excelGenerator.generator(response, records, f);
+		
+		String subject = "All the plans";
+		String body = "<h1>All the details of plan holders.</h1>";
+		String to = "rakamr93@gmail.com";
+		
+		emailUtils.sendEmail(subject, body, to, f);
+		
+		f.delete();
 		
 		return true;
 	}
 
 	@Override
 	public boolean exportPdf(HttpServletResponse response) throws Exception {
-		
+		File f  = new File("Plans.pdf");
 		List<CitizenPlan> records = repository.findAll();
-		pdfGenerator.generate(response, records);
+		pdfGenerator.generate(response, records, f);
+		
+		String subject = "All the plans";
+		String body = "<h1>All the details of plan holders.</h1>";
+		String to = "rakamr93@gmail.com";
+		
+		emailUtils.sendEmail(subject, body, to, f);
+		
+		f.delete();
 		
 		return true;
 	}

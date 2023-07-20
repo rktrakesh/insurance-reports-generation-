@@ -1,5 +1,7 @@
 package com.irg.project.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,15 +23,16 @@ import com.lowagie.text.pdf.PdfWriter;
 @Component
 public class PdfGenerator {
 	
-	public void generate(HttpServletResponse response, List<CitizenPlan> plans) throws Exception{
+	public void generate(HttpServletResponse response, List<CitizenPlan> plans, File f) throws Exception{
 		Document document = new Document(PageSize.A4);
 		PdfWriter.getInstance(document, response.getOutputStream());
+		PdfWriter.getInstance(document, new FileOutputStream(f));
 		document.open();
 		
 		//for font styling (not mandatory)
 		Font fontTiltle = FontFactory.getFont(FontFactory.TIMES_ROMAN);
 		fontTiltle.setSize(20);
-		Paragraph paragraph = new Paragraph("List Of Students", fontTiltle);
+		Paragraph paragraph = new Paragraph("List Of Plan Holders", fontTiltle);
 		
 		// Aligning the paragraph in document
 		paragraph.setAlignment(Paragraph.ALIGN_CENTER);
